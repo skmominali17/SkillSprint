@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
-import { account } from "../appwrite/Connection.js"
+import { account, databases } from "../appwrite/Connection.js";
 import AuthContext from "../contexts/AuthContext";
 
 const Register = () => {
@@ -18,17 +18,26 @@ const Register = () => {
 
   const submitHandler = async (data) => {
     data.userType = userType;
-    console.log(crypto.randomUUID());
-    console.log(data);
+    const currUserId = crypto.randomUUID();
     try {
       const response = await account.create(
-        crypto.randomUUID(),
+        currUserId,
         data.email,
         data.password,
-        data.fullName,
+        data.fullName
       );
-      console.log(response);
       if (response) {
+        const document = await databases.createDocument(
+          import.meta.env.VITE_DATABASE_ID,
+          import.meta.env.VITE_USERS_COLLECTION_ID,
+          crypto.randomUUID(),
+          {
+            userID: currUserId,
+            mail: data.email,
+            fullName: data.fullName,
+            userType: data.userType,
+          }
+        );
         login(response);
         navigate("/");
       }

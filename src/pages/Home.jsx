@@ -2,9 +2,27 @@ import React, { useContext, useEffect } from "react";
 import Navbar from "../components/Header/Navbar";
 import { FaSearch } from "react-icons/fa";
 import SearchContext from "../contexts/SearchContext";
+import { databases } from "../appwrite/Connection";
+import AuthContext from "../contexts/AuthContext";
 
 function Home() {
   const { searched } = useContext(SearchContext);
+  const { isLoggedIn } = useContext(AuthContext);
+  
+  if (isLoggedIn) {
+    useEffect(() => {
+      const fetchDocuments = async () => {
+        try {
+          const documents = await databases.listDocuments(import.meta.env.VITE_DATABASE_ID, import.meta.env.VITE_USERS_COLLECTION_ID);
+          console.log("fetchedDocuments ---->",documents);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+  
+      fetchDocuments();
+    }, []);
+  }
   
   return (
     <div>

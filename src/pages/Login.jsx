@@ -26,6 +26,7 @@ const Login = () => {
       }
       navigate("/");
     } catch (error) {
+      alert(error.message);
       console.log(error);
     }
   };
