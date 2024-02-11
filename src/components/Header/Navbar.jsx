@@ -5,7 +5,6 @@ import { FaSearch } from "react-icons/fa";
 import SearchContext from "../../contexts/SearchContext";
 import { account } from "../../appwrite/Connection";
 
-
 function Navbar() {
   const { isLoggedIn, logout } = useContext(AuthContext);
   const { searched, search } = useContext(SearchContext);
@@ -43,20 +42,19 @@ function Navbar() {
             <FaSearch className="text-2xl ml-3 text-white" />
           </button>
         </div>
-        <div>
+        <div className="flex items-center">
           {isLoggedIn ? (
             <button
-              className="px-4 py-2 rounded-lg bg-blue-500 text-white font-semibold focus:outline-none text-lg"
+              className="px-4 py-2 rounded-xl bg-green-400 text-gray-900 focus:outline-none text-sm tracking-wide font-semibold"
               onClick={logoutHandler}
             >
               Logout
             </button>
           ) : (
-            <NavLink
-              to="/login"
-              className="px-4 py-2 rounded-lg bg-blue-500 text-white font-semibold focus:outline-none text-lg"
-            >
-              Login
+            <NavLink to="/login">
+              <button className="px-4 py-2 rounded-lg bg-green-400 text-gray-900 focus:outline-none text-sm tracking-wide font-semibold">
+                Login
+              </button>
             </NavLink>
           )}
         </div>
