@@ -2,37 +2,38 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
-import { account } from "../appwrite/Connection.js"
+import { account, databases } from "../appwrite/Connection.js";
 import AuthContext from "../contexts/AuthContext";
+import { Query } from "appwrite";
 
 const Login = () => {
   const { login } = React.useContext(AuthContext);
-  const [userType, setUserType] = useState("learner");
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   const submitHandler = async (data) => {
-    data.userType = userType;
-    console.log(data);
     try {
       const response = await account.createEmailSession(
         data.email,
-        data.password,
+        data.password
+      );
+      const currUser = await account.get();
+      console.log("currrUser----------->", currUser.$id);
+      const document = await databases.listDocuments(
+        import.meta.env.VITE_DATABASE_ID,
+        import.meta.env.VITE_USERS_COLLECTION_ID,
+        [Query.equal("userID", currUser.$id)]
       );
       console.log(response);
       if (response) {
-        login(response);
+        login(document.documents[0]);
       }
       navigate("/");
     } catch (error) {
       alert(error.message);
       console.log(error);
     }
-  };
-
-  const handleUserTypeChange = (e) => {
-    setUserType(e.target.value);
   };
 
   const togglePasswordVisibility = () => {
@@ -60,33 +61,19 @@ const Login = () => {
                   onSubmit={handleSubmit(submitHandler)}
                   className="w-full px-8 py-4 rounded-lg font-medium bg-gray-700 border border-gray-600 placeholder-gray-400 text-sm focus:outline-none focus:border-gray-500 focus:bg-gray-600"
                 >
-                  <div className="flex justify-center items-center mb-2">
-                    <div className="text-lg mr-4">Login as:</div>
-                    <div className="text-lg">
-                      <input
-                        type="radio"
-                        id="learner"
-                        name="userType"
-                        value="learner"
-                        checked={userType === "learner"}
-                        onChange={handleUserTypeChange}
-                        className="mr-2"
-                      />
-                      <label htmlFor="learner" className="mr-4">
-                        Learner
-                      </label>
-                      <input
-                        type="radio"
-                        id="teacher"
-                        name="userType"
-                        value="teacher"
-                        checked={userType === "teacher"}
-                        onChange={handleUserTypeChange}
-                        className="mr-2"
-                      />
-                      <label htmlFor="teacher">Teacher</label>
-                    </div>
-                  </div>
+                  <button
+                    className="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150 w-full mt-1 items-center justify-center"
+                    onClick={handleOAuth2Authentication}
+                  >
+                    <img
+                      className="w-6 h-6"
+                      src="https://www.svgrepo.com/show/475656/google-color.svg"
+                      loading="lazy"
+                      alt="google logo"
+                    />
+                    <span>Sign in with Google</span>
+                  </button>
+                  <p className="text-center mt-1 mb-3">Or</p>
                   <input
                     type="email"
                     placeholder="Email"
@@ -116,19 +103,6 @@ const Login = () => {
                     className="tracking-wide font-semibold bg-green-400 text-gray-900 w-full py-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                   >
                     Sign In
-                  </button>
-                  <p className="text-center mt-2">Or</p>
-                  <button
-                    className="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150 w-full mt-1 items-center justify-center"
-                    onClick={handleOAuth2Authentication}
-                  >
-                    <img
-                      className="w-6 h-6"
-                      src="https://www.svgrepo.com/show/475656/google-color.svg"
-                      loading="lazy"
-                      alt="google logo"
-                    />
-                    <span>Sign in with Google</span>
                   </button>
                 </form>
                 <p className="mt-4 text-xs text-gray-400 text-center">

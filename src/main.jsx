@@ -8,6 +8,8 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { SearchProvider } from "./contexts/SearchContext.jsx";
+import CourseUpload from "./pages/CourseUpload.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,22 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/category/:category",
+    element: <App />,
+  },
+  {
+    path: "/featured/:id",
+    element: <App />,
+  },
+  {
+    path: "/course",
+    element: (
+      <ProtectedRoute>
+        <CourseUpload />
+      </ProtectedRoute>
+    ),
   },
 ]);
 

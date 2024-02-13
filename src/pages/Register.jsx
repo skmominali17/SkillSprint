@@ -27,6 +27,10 @@ const Register = () => {
         data.fullName
       );
       if (response) {
+        await account.createEmailSession(
+          data.email,
+          data.password
+        );
         const document = await databases.createDocument(
           import.meta.env.VITE_DATABASE_ID,
           import.meta.env.VITE_USERS_COLLECTION_ID,
@@ -38,7 +42,7 @@ const Register = () => {
             userType: data.userType,
           }
         );
-        login(response);
+        login(document);
         navigate("/");
       }
     } catch (error) {

@@ -3,7 +3,7 @@ import Business from "../assests/images/Business.jpg";
 import Design from "../assests/images/Design.jpg";
 import Photography from "../assests/images/Photography.jpg";
 import Technology from "../assests/images/Technology.jpg";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const CourseCategory = () => {
   const categories = [
@@ -38,7 +38,7 @@ const CourseCategory = () => {
       {/* Card component */}
       <div className="mx-auto container flex items-center justify-evenly mt-3">
         {categories.map((category) => (
-          <NavLink to={category.link} key={category.id}>
+          <Link to={`category/:${category.title}`} key={category.id}>
             <div className="flex flex-col items-center p-5 text-white hover:text-black hover:bg-green-400 rounded-lg transition duration-300 ease-in-out">
               <div className="h-72 w-72 overflow-hidden rounded-lg">
                 <img
@@ -51,7 +51,7 @@ const CourseCategory = () => {
                 {category.title}
               </h3>
             </div>
-          </NavLink>
+          </Link>
         ))}
       </div>
     </div>

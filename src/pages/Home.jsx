@@ -6,6 +6,7 @@ import { databases, storage } from "../appwrite/Connection";
 import AuthContext from "../contexts/AuthContext";
 import CourseCategory from "../components/CourseCategory";
 import FeaturedCourses from "../components/FeaturedCourses";
+import { Link } from "react-router-dom";
 
 function Home() {
   const { searched } = useContext(SearchContext);
@@ -71,6 +72,9 @@ function Home() {
         <div className="mt-8">
           <FeaturedCourses />
         </div>
+        <button className="px-32 py-10 bg-green-400">
+          <Link to="/course">Create</Link>
+        </button>
       </div>
     </div>
   );
