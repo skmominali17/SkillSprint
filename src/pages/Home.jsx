@@ -21,7 +21,7 @@ function Home() {
             import.meta.env.VITE_USERS_COLLECTION_ID
           );
           const image = await storage.getFilePreview(
-            import.meta.env.VITE_BUCKET_IMAGES_ID,
+            import.meta.env.VITE_BUCKET_PROFILE_IMAGES_ID,
             "65c8782e758ff0af154e"
           );
         } catch (error) {

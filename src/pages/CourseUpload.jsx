@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CiCircleRemove } from "react-icons/ci";
-import { databases } from "../appwrite/Connection";
+import { databases, storage } from "../appwrite/Connection";
+import { FaSpinner } from "react-icons/fa"
+import { Query } from "appwrite";
+import AuthContext from "../contexts/AuthContext";
 
 const CourseUpload = () => {
   const { register, handleSubmit } = useForm();
   const [lectureLinks, setLectureLinks] = useState([]);
+  const [loading, setLoading] = useState(false);
   const categories = ["Design", "Technology", "Business", "Photography"];
-
+  const { user } = useContext(AuthContext);
   const handleAddLecture = () => {
     setLectureLinks([...lectureLinks, ""]);
   };
@@ -35,6 +39,14 @@ const CourseUpload = () => {
       return;
     } else {
       try {
+        if (user) {
+          setLoading(true);
+        const thumbnail = await storage.createFile(
+          import.meta.env.VITE_BUCKET_THUMBNAILS_ID,
+          crypto.randomUUID(),
+          document.getElementById("uploader").files[0]
+        );
+        const courseId = crypto.randomUUID();
         const promise = await databases.createDocument(
           import.meta.env.VITE_DATABASE_ID,
           import.meta.env.VITE_COURSES_COLLECTION_ID,
@@ -44,14 +56,27 @@ const CourseUpload = () => {
             description: data.description,
             category: data.category,
             lectures: lectureLinks,
-            userID: "dshfhuewifljf",
+            userID: user.userID,
+            thumbnailID: thumbnail.$id,
+            courseId: courseId,
           }
         );
-        console.log("promise---->", promise);
         if (promise) {
+          const document = await databases.listDocuments(
+            import.meta.env.VITE_DATABASE_ID,
+            import.meta.env.VITE_USERS_COLLECTION_ID,
+            [Query.equal("userID", user.userID)]
+          );
+          const update = await databases.updateDocument(import.meta.env.VITE_DATABASE_ID,
+            import.meta.env.VITE_USERS_COLLECTION_ID, document.documents[0].$id, {
+              courses: [...document.documents[0].courses, courseId],
+            });
+          setLoading(false);
           alert("Course uploaded successfully");
         }
+        }
       } catch (error) {
+        setLoading(false);
         console.log(error);
       }
     }
@@ -116,12 +141,30 @@ const CourseUpload = () => {
                 <IoIosAddCircleOutline />
               </button>
             </div>
-            <div className="flex justify-center mt-4">
+            <div className="mt-4">
+              <label htmlFor="thumbnail" className="text-white font-medium">
+                Upload Thumbnail:{" "}
+              </label>
               <input
-                type="submit"
-                value="Submit"
-                className="bg-green-400 text-black font-medium px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                type="file"
+                accept="image/*"
+                {...register("thumbnail")}
+                className="mb-4 block w-full p-2 rounded-lg bg-zinc-700 text-white focus:outline-none"
+                id="uploader"
               />
+            </div>
+            <div className="flex justify-center mt-4">
+              <button
+                type="submit"
+                className="bg-green-400 text-black font-medium px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                disabled={loading}
+              >
+                {loading ? (
+                  <FaSpinner className="animate-spin mr-2" />
+                ) : (
+                  "Submit"
+                )}
+              </button>
             </div>
           </form>
         </div>
