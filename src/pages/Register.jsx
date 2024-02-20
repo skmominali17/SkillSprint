@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
@@ -20,6 +20,7 @@ const Register = () => {
     data.userType = userType;
     const currUserId = crypto.randomUUID();
     try {
+      // This section creates the account of user
       const response = await account.create(
         currUserId,
         data.email,
@@ -27,10 +28,9 @@ const Register = () => {
         data.fullName
       );
       if (response) {
-        await account.createEmailSession(
-          data.email,
-          data.password
-        );
+        // This creates a email session for the user to verify their email address
+        await account.createEmailSession(data.email, data.password);
+        // This section creates the user Document in the database
         const document = await databases.createDocument(
           import.meta.env.VITE_DATABASE_ID,
           import.meta.env.VITE_USERS_COLLECTION_ID,
@@ -42,6 +42,7 @@ const Register = () => {
             userType: data.userType,
           }
         );
+        // adding user Details in AuthContext for protected route and userID
         login(document);
         navigate("/");
       }

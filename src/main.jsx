@@ -10,11 +10,17 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { SearchProvider } from "./contexts/SearchContext.jsx";
 import CourseUpload from "./pages/CourseUpload.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-
+import CourseRender from "./pages/CourseRender.jsx";
+import Home from "./pages/Home.jsx";
+import { CourseProvider } from "./contexts/CourseContext.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <App>
+        <Home />
+      </App>
+    ),
     errorElement: <ErrorPage />,
   },
   {
@@ -37,8 +43,18 @@ const router = createBrowserRouter([
     path: "/course",
     element: (
       <ProtectedRoute>
-        <CourseUpload />
+        <App>
+          <CourseUpload />
+        </App>
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/render-course",
+    element: (
+      <App>
+        <CourseRender />
+      </App>
     ),
   },
 ]);
@@ -46,9 +62,11 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
-      <SearchProvider>
-        <RouterProvider router={router} />
-      </SearchProvider>
+      <CourseProvider>
+        <SearchProvider>
+          <RouterProvider router={router} />
+        </SearchProvider>
+      </CourseProvider>
     </AuthProvider>
   </React.StrictMode>
 );

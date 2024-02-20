@@ -1,33 +1,45 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { account, databases } from "../appwrite/Connection.js";
 import AuthContext from "../contexts/AuthContext";
 import { Query } from "appwrite";
+import CourseContext from "../contexts/CourseContext.jsx";
 
 const Login = () => {
   const { login } = React.useContext(AuthContext);
+  const { addCourse } = useContext(CourseContext);
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   const submitHandler = async (data) => {
     try {
+      // This section creates a email session for the user to verify their email address
       const response = await account.createEmailSession(
         data.email,
         data.password
       );
+
+      // This section get the current logged in user details majorly for its user's Document ID
       const currUser = await account.get();
       console.log("currrUser----------->", currUser.$id);
+      // Here we are using the above document ID to fetch the document of the current user
       const document = await databases.listDocuments(
         import.meta.env.VITE_DATABASE_ID,
         import.meta.env.VITE_USERS_COLLECTION_ID,
         [Query.equal("userID", currUser.$id)]
       );
-      console.log(response);
       if (response) {
+        // add the user Details to authContext mainly for userType and userID
         login(document.documents[0]);
+        // This section add the courses in courseContext
+        const promise = await databases.listDocuments(
+          import.meta.env.VITE_DATABASE_ID,
+          import.meta.env.VITE_COURSES_COLLECTION_ID,
+        );
+        addCourse(promise.documents);
       }
       navigate("/");
     } catch (error) {

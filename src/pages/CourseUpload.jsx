@@ -3,16 +3,21 @@ import { useForm } from "react-hook-form";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CiCircleRemove } from "react-icons/ci";
 import { databases, storage } from "../appwrite/Connection";
-import { FaSpinner } from "react-icons/fa"
+import { FaSpinner } from "react-icons/fa";
 import { Query } from "appwrite";
 import AuthContext from "../contexts/AuthContext";
+import CourseContext from "../contexts/CourseContext";
 
 const CourseUpload = () => {
+  // All Contexts
+  const { addCourse } = useContext(CourseContext)
+  const { user } = useContext(AuthContext);
+
   const { register, handleSubmit } = useForm();
   const [lectureLinks, setLectureLinks] = useState([]);
   const [loading, setLoading] = useState(false);
   const categories = ["Design", "Technology", "Business", "Photography"];
-  const { user } = useContext(AuthContext);
+  
   const handleAddLecture = () => {
     setLectureLinks([...lectureLinks, ""]);
   };
@@ -30,10 +35,12 @@ const CourseUpload = () => {
   };
 
   const submitHandler = async (data) => {
+    //necessary condition for submitting course
     if (
       data.title.length === 0 &&
       data.description.length === 0 &&
-      data.category.length === 0
+      data.category.length === 0 &&
+      data.thumbnail === null
     ) {
       alert("Please fill title, description, and category in all fields");
       return;
@@ -41,39 +48,55 @@ const CourseUpload = () => {
       try {
         if (user) {
           setLoading(true);
-        const thumbnail = await storage.createFile(
-          import.meta.env.VITE_BUCKET_THUMBNAILS_ID,
-          crypto.randomUUID(),
-          document.getElementById("uploader").files[0]
-        );
-        const courseId = crypto.randomUUID();
-        const promise = await databases.createDocument(
-          import.meta.env.VITE_DATABASE_ID,
-          import.meta.env.VITE_COURSES_COLLECTION_ID,
-          crypto.randomUUID(),
-          {
-            title: data.title,
-            description: data.description,
-            category: data.category,
-            lectures: lectureLinks,
-            userID: user.userID,
-            thumbnailID: thumbnail.$id,
-            courseId: courseId,
-          }
-        );
-        if (promise) {
-          const document = await databases.listDocuments(
-            import.meta.env.VITE_DATABASE_ID,
-            import.meta.env.VITE_USERS_COLLECTION_ID,
-            [Query.equal("userID", user.userID)]
+          // This section uploads the thumbnail in the database
+          const thumbnail = await storage.createFile(
+            import.meta.env.VITE_BUCKET_THUMBNAILS_ID,
+            crypto.randomUUID(),
+            document.getElementById("uploader").files[0]
           );
-          const update = await databases.updateDocument(import.meta.env.VITE_DATABASE_ID,
-            import.meta.env.VITE_USERS_COLLECTION_ID, document.documents[0].$id, {
-              courses: [...document.documents[0].courses, courseId],
-            });
-          setLoading(false);
-          alert("Course uploaded successfully");
-        }
+          const courseId = crypto.randomUUID();
+          // This section creates the course in the database
+          const promise = await databases.createDocument(
+            import.meta.env.VITE_DATABASE_ID,
+            import.meta.env.VITE_COURSES_COLLECTION_ID,
+            crypto.randomUUID(),
+            {
+              title: data.title,
+              description: data.description,
+              category: data.category,
+              lectures: lectureLinks,
+              userID: user.userID,
+              thumbnailID: thumbnail.$id,
+              courseId: courseId,
+            }
+          );
+          if (promise) {
+            // if course is created succesfully then, finding the DocumentID of curr User
+            const document = await databases.listDocuments(
+              import.meta.env.VITE_DATABASE_ID,
+              import.meta.env.VITE_USERS_COLLECTION_ID,
+              [Query.equal("userID", user.userID)]
+            );
+
+            // then we are updating the course array of user by adding the courseID
+            const update = await databases.updateDocument(
+              import.meta.env.VITE_DATABASE_ID,
+              import.meta.env.VITE_USERS_COLLECTION_ID,
+              document.documents[0].$id,
+              {
+                courses: [...document.documents[0].courses, courseId],
+              }
+            );
+
+            // This section add the courses in courseContext
+            const promise = await databases.listDocuments(
+              import.meta.env.VITE_DATABASE_ID,
+              import.meta.env.VITE_COURSES_COLLECTION_ID
+            );
+            addCourse(promise.documents);
+            setLoading(false);
+            alert("Course uploaded successfully");
+          }
         }
       } catch (error) {
         setLoading(false);

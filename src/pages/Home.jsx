@@ -35,9 +35,6 @@ function Home() {
 
   return (
     <div className="w-screen bg-gray-900">
-      <div>
-        <Navbar />
-      </div>
       {/* Hero Image Section */}
       <div className="container mx-auto">
         <section className="relative flex justify-center">
@@ -72,9 +69,14 @@ function Home() {
         <div className="mt-8">
           <FeaturedCourses />
         </div>
+        <Link to="/course">
         <button className="px-32 py-10 bg-green-400">
-          <Link to="/course">Create</Link>
-        </button>
+          Create
+        </button></Link>
+        <Link to="/render-course">
+        <button className="mx-3 px-32 py-10 bg-green-400">
+          Render
+        </button></Link>
       </div>
     </div>
   );

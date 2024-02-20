@@ -1,13 +1,17 @@
-import Footer from "./components/Footer/Footer"
-import Home from "./pages/Home"
+import React from 'react';
+import Footer from "./components/Footer/Footer";
+import Navbar from "./components/Header/Navbar";
 
-function App() {
+const App = ({ children }) => {
   return (
-    <>
-      <div className="text-4xl"> <Home /><Footer />
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <div className="flex-grow">
+        {children}
       </div>
-    </>
-  )
-}
+      <Footer />
+    </div>
+  );
+};
 
-export default App
+export default App;
