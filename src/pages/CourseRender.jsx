@@ -5,6 +5,7 @@ import AuthContext from "../contexts/AuthContext";
 import { storage, databases } from "../appwrite/Connection";
 import { Query } from "appwrite";
 import Profile from "../assests/images/Design.jpg";
+import { useParams } from "react-router-dom";
 
 // this function is extracts the videoID from youtube link
 function extractVideoId(url) {
@@ -15,6 +16,7 @@ function extractVideoId(url) {
 }
 
 const CourseRender = () => {
+  const params = useParams()
   const { courses } = useContext(CourseContext);
   const { user } = useContext(AuthContext);
 
@@ -23,14 +25,14 @@ const CourseRender = () => {
   const [loading, setLoading] = useState(false);
 
   // this courseID will come from the url params
-  const courseID = "b5d0634f-828b-418f-afc2-0ef4777a89ae";
+  const courseID = params.id.replace(":", "");
 
   // filtering the current course with the help of courseID
-  const currCourse = courses.filter((course) => course.courseId === courseID);
-  console.log("currCourse", currCourse[0].lectures);
+  const currCourse = courses.find((course) => course.courseId === courseID);
+  console.log("currCourse", currCourse);
 
   // acquiring the thumbnailID from currCourse
-  const thumbnailID = currCourse[0].thumbnailID;
+  const thumbnailID = currCourse.thumbnailID;
 
   useEffect(() => {
     // finding neccesary details such as thumbnail and creator of the course
@@ -93,11 +95,11 @@ const CourseRender = () => {
               </span>
             </p>
           </div>
-          <p className="text-3xl mt-4 mb-2">{currCourse[0].title}</p>
-          <p className="text-md">{currCourse[0].description}</p>
+          <p className="text-3xl mt-4 mb-2">{currCourse.title}</p>
+          <p className="text-md">{currCourse.description}</p>
         </div>
         <div className="text-white w-full pb-14">
-          {currCourse[0].lectures.map((lecture, index) => (
+          {currCourse.lectures.map((lecture, index) => (
             <div key={index} className="flex items-center w-full gap-4">
               <span className="text-lg">{index + 1}.</span>
               <div className="flex items-center w-full h-10 mb-2 rounded-md bg-gray-700">

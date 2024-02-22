@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CourseRender from "./pages/CourseRender.jsx";
 import Home from "./pages/Home.jsx";
 import { CourseProvider } from "./contexts/CourseContext.jsx";
+import MyCourses from "./pages/MyCourses.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "/course",
+    path: "/create/course",
     element: (
       <ProtectedRoute>
         <App>
@@ -50,7 +51,15 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/render-course",
+    path: "/my-courses",
+    element: (
+      <App>
+        <MyCourses />
+      </App>
+    ),
+  },
+  {
+    path: "/watch/course/:id",
     element: (
       <App>
         <CourseRender />

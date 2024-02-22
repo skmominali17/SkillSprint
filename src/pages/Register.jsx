@@ -4,12 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { account, databases } from "../appwrite/Connection.js";
 import AuthContext from "../contexts/AuthContext";
+import { FaSpinner } from "react-icons/fa";
 
 const Register = () => {
-  const { login } = React.useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [userType, setUserType] = useState("learner");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -20,6 +22,7 @@ const Register = () => {
     data.userType = userType;
     const currUserId = crypto.randomUUID();
     try {
+      setLoading(true);
       // This section creates the account of user
       const response = await account.create(
         currUserId,
@@ -44,9 +47,11 @@ const Register = () => {
         );
         // adding user Details in AuthContext for protected route and userID
         login(document);
+        setLoading(false);
         navigate("/");
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -148,9 +153,9 @@ const Register = () => {
                   )}
                   <button
                     type="submit"
-                    className="tracking-wide font-semibold bg-green-400 text-gray-900 w-full py-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                    className="tracking-wide font-semibold bg-green-400 text-gray-900 w-full py-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none" disabled={loading}
                   >
-                    Register
+                    {loading ? <FaSpinner className="animate-spin"/> : "Register"}
                   </button>
                   <p className="text-center mt-2">Or</p>
                   <button

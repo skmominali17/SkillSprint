@@ -6,16 +6,19 @@ import { account, databases } from "../appwrite/Connection.js";
 import AuthContext from "../contexts/AuthContext";
 import { Query } from "appwrite";
 import CourseContext from "../contexts/CourseContext.jsx";
+import { FaSpinner } from "react-icons/fa";
 
 const Login = () => {
   const { login } = React.useContext(AuthContext);
   const { addCourse } = useContext(CourseContext);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   const submitHandler = async (data) => {
     try {
+      setLoading(true);
       // This section creates a email session for the user to verify their email address
       const response = await account.createEmailSession(
         data.email,
@@ -41,8 +44,10 @@ const Login = () => {
         );
         addCourse(promise.documents);
       }
+      setLoading(false);
       navigate("/");
     } catch (error) {
+      setLoading(false);
       alert(error.message);
       console.log(error);
     }
@@ -112,9 +117,9 @@ const Login = () => {
                   </div>
                   <button
                     type="submit"
-                    className="tracking-wide font-semibold bg-green-400 text-gray-900 w-full py-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                    className="tracking-wide font-semibold bg-green-400 text-gray-900 w-full py-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none" disabled={loading}
                   >
-                    Sign In
+                    {loading ? <FaSpinner className="animate-spin"/> : "Sign in"}
                   </button>
                 </form>
                 <p className="mt-4 text-xs text-gray-400 text-center">

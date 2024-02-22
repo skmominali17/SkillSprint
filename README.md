@@ -6,3 +6,4 @@ course upload - done (update user course, storage thumbnail, course detail)
 6. appwrite me courses ke andar title array field banana he, phir jab course submit krenge tab lecture array or title array ka length same hona chahhiye. Aur title me same functionality hoga jo lectures me he. agar add button par click krenge toh do fields ek saath aaengi.
 7. params routing hoga lectures par click krne se rendercourse ke andar
 8. renderCourse wala compenent hi use krenge lectures dikhane ke life with the help of condional rendering
+9. We have to update the user somehow in the courseUpload section after the course is being uploaded

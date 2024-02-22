@@ -34,7 +34,7 @@ function Home() {
   }, [isLoggedIn]);
 
   return (
-    <div className="w-screen bg-gray-900">
+    <div className="w-screen">
       {/* Hero Image Section */}
       <div className="container mx-auto">
         <section className="relative flex justify-center">
@@ -69,14 +69,12 @@ function Home() {
         <div className="mt-8">
           <FeaturedCourses />
         </div>
-        <Link to="/course">
-        <button className="px-32 py-10 bg-green-400">
-          Create
-        </button></Link>
-        <Link to="/render-course">
-        <button className="mx-3 px-32 py-10 bg-green-400">
-          Render
-        </button></Link>
+        <Link to="/create/course">
+          <button className="px-32 py-10 bg-green-400">Create</button>
+        </Link>
+        <Link to="/my-courses">
+          <button className="mx-3 px-32 py-10 bg-green-400">mycourses</button>
+        </Link>
       </div>
     </div>
   );
