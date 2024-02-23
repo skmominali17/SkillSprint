@@ -48,16 +48,14 @@ const CourseRender = () => {
       const creatorDetails = await databases.listDocuments(
         import.meta.env.VITE_DATABASE_ID,
         import.meta.env.VITE_USERS_COLLECTION_ID,
-        [Query.equal("userID", user.userID)]
+        [Query.equal("userID", currCourse.userID)]
       );
-      // console.log("creatorDetails", creatorDetails.documents[0]);
       setCreator(creatorDetails.documents[0]);
       setThumbnail(thumbnail);
     };
 
     getDetails();
-    console.log("creator", creator);
-  }, []);
+  }, [currCourse]);
 
   const videoOptions = {
     playerVars: {
@@ -102,7 +100,7 @@ const CourseRender = () => {
                 <p className="text-2xl">
                   Course Created By:{" "}
                   <span className="text-green-400 font-medium">
-                    {/* {creator.fullName} */} Momin
+                    {creator?.fullName}
                   </span>
                 </p>
                 <p className="text-3xl mt-4 mb-2">{currCourse.title}</p>

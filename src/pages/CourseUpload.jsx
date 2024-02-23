@@ -10,9 +10,10 @@ import CourseContext from "../contexts/CourseContext";
 
 const CourseUpload = () => {
   // All Contexts
-  const { addCourse } = useContext(CourseContext);
-  const { user } = useContext(AuthContext);
-
+  const { addCourse, courses } = useContext(CourseContext);
+  const { user, login } = useContext(AuthContext);
+  console.log("All Courses: ", courses);
+  console.log("User: ", user);
   const { register, handleSubmit } = useForm();
   const [lectureLinks, setLectureLinks] = useState([""]);
   const [lectureTitles, setLectureTitles] = useState([""]);
@@ -72,23 +73,18 @@ const CourseUpload = () => {
             }
           );
           if (promise) {
-            // if course is created succesfully then, finding the DocumentID of curr User
-            const document = await databases.listDocuments(
-              import.meta.env.VITE_DATABASE_ID,
-              import.meta.env.VITE_USERS_COLLECTION_ID,
-              [Query.equal("userID", user.userID)]
-            );
             setLoading(false);
-            // then we are updating the course array of user by adding the courseID
+            // we are updating the course array of user by adding the courseID
             const update = await databases.updateDocument(
               import.meta.env.VITE_DATABASE_ID,
               import.meta.env.VITE_USERS_COLLECTION_ID,
-              document.documents[0].$id,
+              user.$id,
               {
-                courses: [...document.documents[0].courses, courseId],
+                courses: [...user.courses, courseId],
               }
             );
-
+            // Also updating the user context with latest course
+            login(update);
             // This section add the courses in courseContext
             const promise = await databases.listDocuments(
               import.meta.env.VITE_DATABASE_ID,
@@ -139,31 +135,33 @@ const CourseUpload = () => {
             <div>
               <h3 className="text-lg font-medium text-white mb-2">Lectures</h3>
               {lectureTitles.map((title, index) => (
-                <div key={index} className="flex mb-2">
-                  <input
-                    type="text"
-                    placeholder={`Lecture ${index + 1} Title`}
-                    value={title}
-                    onChange={(e) => {
-                      const newTitles = [...lectureTitles];
-                      newTitles[index] = e.target.value;
-                      setLectureTitles(newTitles);
-                    }}
-                    required
-                    className="flex-1 px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg mr-2"
-                  />
-                  <input
-                    type="text"
-                    placeholder={`Lecture ${index + 1} YouTube Link`}
-                    value={lectureLinks[index]}
-                    onChange={(e) => {
-                      const newLinks = [...lectureLinks];
-                      newLinks[index] = e.target.value;
-                      setLectureLinks(newLinks);
-                    }}
-                    required
-                    className="flex-1 px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg mr-2"
-                  />
+                <div key={index} className="flex mb-4">
+                  <div className="flex flex-col w-full gap-2">
+                    <input
+                      type="text"
+                      placeholder={`Lecture ${index + 1} Title`}
+                      value={title}
+                      onChange={(e) => {
+                        const newTitles = [...lectureTitles];
+                        newTitles[index] = e.target.value;
+                        setLectureTitles(newTitles);
+                      }}
+                      required
+                      className="flex-1 px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg mr-2"
+                    />
+                    <input
+                      type="text"
+                      placeholder={`Lecture ${index + 1} YouTube Link`}
+                      value={lectureLinks[index]}
+                      onChange={(e) => {
+                        const newLinks = [...lectureLinks];
+                        newLinks[index] = e.target.value;
+                        setLectureLinks(newLinks);
+                      }}
+                      required
+                      className="flex-1 px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg mr-2"
+                    />
+                  </div>
                   <button
                     type="button"
                     onClick={() => handleRemoveLecture(index)}
