@@ -16,13 +16,14 @@ function extractVideoId(url) {
 }
 
 const CourseRender = () => {
-  const params = useParams()
+  const params = useParams();
   const { courses } = useContext(CourseContext);
   const { user } = useContext(AuthContext);
 
-  const [thumnail, setThumbnail] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
   const [creator, setCreator] = useState();
   const [loading, setLoading] = useState(false);
+  const [activeLectureIndex, setActiveLectureIndex] = useState(null);
 
   // this courseID will come from the url params
   const courseID = params.id.replace(":", "");
@@ -57,53 +58,77 @@ const CourseRender = () => {
     getDetails();
     console.log("creator", creator);
   }, []);
-  // This section will be used in different component
-  // const videoId = extractVideoId(
-  //   "https://youtu.be/dx4m_2xiNWU?si=PXcPPCW_C9wRjX8f"
-  // );
-  // const videoOptions = {
-  //   playerVars: {
-  //     autoplay: 0,
-  //   },
-  //   width: "100%",
-  //   height: "610",
-  // };
+
+  const videoOptions = {
+    playerVars: {
+      autoplay: 0,
+    },
+    width: "100%",
+    height: "610",
+  };
+
   return (
     <div className="w-screen bg-gray-900 py-3">
       <div className="container mx-auto flex flex-col items-center">
         <div className="mx-auto w-full h-2/3 overflow-hidden rounded-lg">
-          {/* <YouTube videoId={videoId} opts={videoOptions} /> */}
-          <img
-            src={thumnail}
-            alt="thumbnail"
-            className="w-full h-full object-cover"
-          />
+          {activeLectureIndex !== null ? (
+            // Render YouTube video for the active lecture
+            <YouTube
+              videoId={extractVideoId(
+                currCourse.lectureLinks[activeLectureIndex]
+              )}
+              opts={videoOptions}
+            />
+          ) : (
+            // Render thumbnail if no lecture is active
+            <img
+              src={thumbnail}
+              alt="thumbnail"
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
-        <div className="w-full pt-10 pb-6 text-white">
-          <div className="flex items-center w-full gap-4">
-            <div className="w-10 h-10 rounded-full overflow-hidden">
-              <img
-                src={Profile}
-                alt="profileImage"
-                className="w-full h-full object-cover"
-              />
+        {activeLectureIndex === null ? (
+          <div className="w-full pt-10 pb-6 text-white">
+            <div className="flex items-center w-full gap-4">
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                <img
+                  src={Profile}
+                  alt="profileImage"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <p className="text-2xl">
+                  Course Created By:{" "}
+                  <span className="text-green-400 font-medium">
+                    {/* {creator.fullName} */} Momin
+                  </span>
+                </p>
+                <p className="text-3xl mt-4 mb-2">{currCourse.title}</p>
+                <p className="text-md">{currCourse.description}</p>
+              </div>
             </div>
-            <p className="text-2xl">
-              Course Created By:{" "}
-              <span className="text-green-400 font-medium">
-                {/* {creator.fullName} */} Momin
-              </span>
+          </div>
+        ) : (
+          <div className="w-full pt-10 pb-6 text-white">
+            <p className="text-3xl mb-2">Lecture {activeLectureIndex + 1}</p>
+            <p className="text-md">
+              {currCourse.lectureTitles[activeLectureIndex]}
             </p>
           </div>
-          <p className="text-3xl mt-4 mb-2">{currCourse.title}</p>
-          <p className="text-md">{currCourse.description}</p>
-        </div>
+        )}
+
         <div className="text-white w-full pb-14">
-          {currCourse.lectures.map((lecture, index) => (
-            <div key={index} className="flex items-center w-full gap-4">
+          {currCourse.lectureTitles.map((title, index) => (
+            <div
+              key={index}
+              className="flex items-center w-full gap-4 cursor-pointer"
+              onClick={() => setActiveLectureIndex(index)}
+            >
               <span className="text-lg">{index + 1}.</span>
               <div className="flex items-center w-full h-10 mb-2 rounded-md bg-gray-700">
-                <span className="mx-4">{lecture}</span>
+                <span className="mx-4">{title}</span>
               </div>
             </div>
           ))}

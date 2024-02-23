@@ -10,27 +10,27 @@ import CourseContext from "../contexts/CourseContext";
 
 const CourseUpload = () => {
   // All Contexts
-  const { addCourse } = useContext(CourseContext)
+  const { addCourse } = useContext(CourseContext);
   const { user } = useContext(AuthContext);
 
   const { register, handleSubmit } = useForm();
-  const [lectureLinks, setLectureLinks] = useState([]);
+  const [lectureLinks, setLectureLinks] = useState([""]);
+  const [lectureTitles, setLectureTitles] = useState([""]);
   const [loading, setLoading] = useState(false);
   const categories = ["Design", "Technology", "Business", "Photography"];
-  
+
   const handleAddLecture = () => {
+    setLectureTitles([...lectureTitles, ""]);
     setLectureLinks([...lectureLinks, ""]);
   };
 
   const handleRemoveLecture = (index) => {
+    const updatedTitles = [...lectureTitles];
+    updatedTitles.splice(index, 1);
+    setLectureTitles(updatedTitles);
+
     const updatedLinks = [...lectureLinks];
     updatedLinks.splice(index, 1);
-    setLectureLinks(updatedLinks);
-  };
-
-  const handleLectureChange = (index, value) => {
-    const updatedLinks = [...lectureLinks];
-    updatedLinks[index] = value;
     setLectureLinks(updatedLinks);
   };
 
@@ -64,7 +64,8 @@ const CourseUpload = () => {
               title: data.title,
               description: data.description,
               category: data.category,
-              lectures: lectureLinks,
+              lectureLinks: lectureLinks,
+              lectureTitles: lectureTitles,
               userID: user.userID,
               thumbnailID: thumbnail.$id,
               courseId: courseId,
@@ -77,7 +78,7 @@ const CourseUpload = () => {
               import.meta.env.VITE_USERS_COLLECTION_ID,
               [Query.equal("userID", user.userID)]
             );
-
+            setLoading(false);
             // then we are updating the course array of user by adding the courseID
             const update = await databases.updateDocument(
               import.meta.env.VITE_DATABASE_ID,
@@ -94,7 +95,6 @@ const CourseUpload = () => {
               import.meta.env.VITE_COURSES_COLLECTION_ID
             );
             addCourse(promise.documents);
-            setLoading(false);
             alert("Course uploaded successfully");
           }
         }
@@ -127,7 +127,7 @@ const CourseUpload = () => {
             />
             <select
               {...register("category")}
-              className="mb-4 block w-full px-5 py-3 rounded-lg bg-zinc-700 text-gray-400 focus:outline-none text-lg"
+              className="mb-4 block w-full px-5 py-3 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg"
             >
               <option value="">Select Category</option>
               {categories.map((category, index) => (
@@ -138,13 +138,30 @@ const CourseUpload = () => {
             </select>
             <div>
               <h3 className="text-lg font-medium text-white mb-2">Lectures</h3>
-              {lectureLinks.map((link, index) => (
+              {lectureTitles.map((title, index) => (
                 <div key={index} className="flex mb-2">
                   <input
                     type="text"
+                    placeholder={`Lecture ${index + 1} Title`}
+                    value={title}
+                    onChange={(e) => {
+                      const newTitles = [...lectureTitles];
+                      newTitles[index] = e.target.value;
+                      setLectureTitles(newTitles);
+                    }}
+                    required
+                    className="flex-1 px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg mr-2"
+                  />
+                  <input
+                    type="text"
                     placeholder={`Lecture ${index + 1} YouTube Link`}
-                    value={link}
-                    onChange={(e) => handleLectureChange(index, e.target.value)}
+                    value={lectureLinks[index]}
+                    onChange={(e) => {
+                      const newLinks = [...lectureLinks];
+                      newLinks[index] = e.target.value;
+                      setLectureLinks(newLinks);
+                    }}
+                    required
                     className="flex-1 px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg mr-2"
                   />
                   <button
