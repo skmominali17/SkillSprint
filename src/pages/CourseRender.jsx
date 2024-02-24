@@ -30,7 +30,6 @@ const CourseRender = () => {
 
   // filtering the current course with the help of courseID
   const currCourse = courses.find((course) => course.courseId === courseID);
-  console.log("currCourse", currCourse);
 
   // acquiring the thumbnailID from currCourse
   const thumbnailID = currCourse.thumbnailID;

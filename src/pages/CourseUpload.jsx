@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CiCircleRemove } from "react-icons/ci";
@@ -7,18 +7,51 @@ import { FaSpinner } from "react-icons/fa";
 import { Query } from "appwrite";
 import AuthContext from "../contexts/AuthContext";
 import CourseContext from "../contexts/CourseContext";
+import { useParams } from "react-router-dom";
 
 const CourseUpload = () => {
   // All Contexts
   const { addCourse, courses } = useContext(CourseContext);
   const { user, login } = useContext(AuthContext);
-  console.log("All Courses: ", courses);
-  console.log("User: ", user);
-  const { register, handleSubmit } = useForm();
+  const [edit, setEdit] = useState(false);
+  const [course, setCourse] = useState(null);
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: {
+      title: "",
+      category: "",
+      description: "",
+      thumbnail: "",
+      lectureTitles: [""],
+      lectureLinks: [""],
+    },
+  });
   const [lectureLinks, setLectureLinks] = useState([""]);
   const [lectureTitles, setLectureTitles] = useState([""]);
   const [loading, setLoading] = useState(false);
+  const params = useParams();
   const categories = ["Design", "Technology", "Business", "Photography"];
+
+  useEffect(() => {
+    if (params.id) {
+      const course = courses.find(
+        (course) => course.courseId === params.id.replace(":", "")
+      );
+      setCourse(course);
+      setEdit(true);
+      if (course) {
+        reset({
+          title: course.title,
+          category: course.category,
+          description: course.description,
+          lectureTitles: course.lectureTitles,
+          lectureLinks: course.lectureLinks,
+        });
+        // Update the lectureTitles and lectureLinks states
+        setLectureTitles(course.lectureTitles);
+        setLectureLinks(course.lectureLinks);
+      }
+    }
+  }, [params.id, courses, reset]);
 
   const handleAddLecture = () => {
     setLectureTitles([...lectureTitles, ""]);
@@ -48,50 +81,85 @@ const CourseUpload = () => {
     } else {
       try {
         if (user) {
-          setLoading(true);
-          // This section uploads the thumbnail in the database
-          const thumbnail = await storage.createFile(
-            import.meta.env.VITE_BUCKET_THUMBNAILS_ID,
-            crypto.randomUUID(),
-            document.getElementById("uploader").files[0]
-          );
-          const courseId = crypto.randomUUID();
-          // This section creates the course in the database
-          const promise = await databases.createDocument(
-            import.meta.env.VITE_DATABASE_ID,
-            import.meta.env.VITE_COURSES_COLLECTION_ID,
-            crypto.randomUUID(),
-            {
-              title: data.title,
-              description: data.description,
-              category: data.category,
-              lectureLinks: lectureLinks,
-              lectureTitles: lectureTitles,
-              userID: user.userID,
-              thumbnailID: thumbnail.$id,
-              courseId: courseId,
-            }
-          );
-          if (promise) {
-            setLoading(false);
-            // we are updating the course array of user by adding the courseID
-            const update = await databases.updateDocument(
+          if (!edit) {
+            setLoading(true);
+            // This section uploads the thumbnail in the database
+            const thumbnail = await storage.createFile(
+              import.meta.env.VITE_BUCKET_THUMBNAILS_ID,
+              crypto.randomUUID(),
+              document.getElementById("uploader").files[0]
+            );
+            const courseId = crypto.randomUUID();
+            // This section creates the course in the database
+            const promise = await databases.createDocument(
               import.meta.env.VITE_DATABASE_ID,
-              import.meta.env.VITE_USERS_COLLECTION_ID,
-              user.$id,
+              import.meta.env.VITE_COURSES_COLLECTION_ID,
+              crypto.randomUUID(),
               {
-                courses: [...user.courses, courseId],
+                title: data.title,
+                description: data.description,
+                category: data.category,
+                lectureLinks: lectureLinks,
+                lectureTitles: lectureTitles,
+                userID: user.userID,
+                thumbnailID: thumbnail.$id,
+                courseId: courseId,
               }
             );
-            // Also updating the user context with latest course
-            login(update);
-            // This section add the courses in courseContext
-            const promise = await databases.listDocuments(
+            if (promise) {
+              setLoading(false);
+              // we are updating the course array of user by adding the courseID
+              const update = await databases.updateDocument(
+                import.meta.env.VITE_DATABASE_ID,
+                import.meta.env.VITE_USERS_COLLECTION_ID,
+                user.$id,
+                {
+                  courses: [...user.courses, courseId],
+                }
+              );
+              // Also updating the user context with latest course
+              login(update);
+              // This section add the courses in courseContext
+              const promise = await databases.listDocuments(
+                import.meta.env.VITE_DATABASE_ID,
+                import.meta.env.VITE_COURSES_COLLECTION_ID
+              );
+              addCourse(promise.documents);
+              alert("Course uploaded successfully");
+            }
+          } else {
+            setLoading(true);
+            // This section updates the course in the database
+            const promise = await databases.updateDocument(
               import.meta.env.VITE_DATABASE_ID,
-              import.meta.env.VITE_COURSES_COLLECTION_ID
+              import.meta.env.VITE_COURSES_COLLECTION_ID,
+              course.$id,
+              {
+                title: data.title,
+                description: data.description,
+                category: data.category,
+                lectureLinks: lectureLinks,
+                lectureTitles: lectureTitles,
+              }
             );
-            addCourse(promise.documents);
-            alert("Course uploaded successfully");
+            if (promise) {
+              setLoading(false);
+              const promise = await databases.listDocuments(
+                import.meta.env.VITE_DATABASE_ID,
+                import.meta.env.VITE_COURSES_COLLECTION_ID
+              );
+              addCourse(promise.documents);
+              alert("Course updated successfully");
+              // updateCourse({
+              //   ...course,
+              //   title: data.title,
+              //   description: data.description,
+              //   category: data.category,
+              //   lectureLinks: lectureLinks,
+              //   lectureTitles: lectureTitles,
+              // });
+              // console.log("updated course contexzt", courses);
+            }
           }
         }
       } catch (error) {
@@ -106,7 +174,7 @@ const CourseUpload = () => {
       <div className="container mx-auto py-8 flex items-center justify-center">
         <div className="bg-gray-800 rounded-lg p-6 w-full">
           <h2 className="text-3xl font-medium text-white mb-4">
-            Add A New Course
+            {edit ? "Edit Course" : "Add A New Course"}
           </h2>
           <form onSubmit={handleSubmit(submitHandler)}>
             <input
@@ -179,18 +247,20 @@ const CourseUpload = () => {
                 <IoIosAddCircleOutline />
               </button>
             </div>
-            <div className="mt-4">
-              <label htmlFor="thumbnail" className="text-white font-medium">
-                Upload Thumbnail:{" "}
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                {...register("thumbnail")}
-                className="mb-4 block w-full p-2 rounded-lg bg-zinc-700 text-white focus:outline-none"
-                id="uploader"
-              />
-            </div>
+            {!edit && (
+              <div className="mt-4">
+                <label htmlFor="thumbnail" className="text-white font-medium">
+                  Upload Thumbnail:{" "}
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register("thumbnail")}
+                  className="mb-4 block w-full p-2 rounded-lg bg-zinc-700 text-white focus:outline-none"
+                  id="uploader"
+                />
+              </div>
+            )}
             <div className="flex justify-center mt-4">
               <button
                 type="submit"

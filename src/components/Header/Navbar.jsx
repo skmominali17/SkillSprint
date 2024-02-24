@@ -8,12 +8,10 @@ import { account } from "../../appwrite/Connection";
 function Navbar() {
   const { isLoggedIn, logout } = useContext(AuthContext);
   const { searched, search } = useContext(SearchContext);
-  console.log(search);
 
   const logoutHandler = async () => {
     try {
       const response = await account.deleteSession("current");
-      console.log(response);
       logout();
     } catch (error) {
       console.error(error);

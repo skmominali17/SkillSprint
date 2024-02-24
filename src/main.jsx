@@ -66,6 +66,16 @@ const router = createBrowserRouter([
       </App>
     ),
   },
+  {
+    path: "/edit/course/:id",
+    element: (
+      <ProtectedRoute>
+        <App>
+          <CourseUpload />
+        </App>
+      </ProtectedRoute>
+    ),
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

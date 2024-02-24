@@ -27,7 +27,6 @@ const Login = () => {
 
       // This section get the current logged in user details majorly for its user's Document ID
       const currUser = await account.get();
-      console.log("currrUser----------->", currUser.$id);
       // Here we are using the above document ID to fetch the document of the current user
       const document = await databases.listDocuments(
         import.meta.env.VITE_DATABASE_ID,

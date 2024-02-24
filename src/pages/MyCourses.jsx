@@ -10,7 +10,6 @@ const MyCourses = () => {
   const userCourses = courses.filter((course) =>
     user.courses.includes(course.courseId)
   );
-  console.log("userCourses=>", userCourses);
   return (
     <div>
       <RenderAllCourses courses={userCourses} />
