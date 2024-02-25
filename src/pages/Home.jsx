@@ -66,14 +66,22 @@ function Home() {
         <div className="mt-2">
           <CourseCategory />
         </div>
-        <div className="mt-8">
-          <FeaturedCourses />
-        </div>
+        {isLoggedIn && (
+          <div className="mt-8">
+            <FeaturedCourses />
+          </div>
+        )}
         <Link to="/create/course">
           <button className="px-32 py-10 bg-green-400">Create</button>
         </Link>
         <Link to="/my-courses">
           <button className="mx-3 px-32 py-10 bg-green-400">mycourses</button>
+        </Link>
+        <Link to="/explore-courses">
+          <button className="mx-3 px-32 py-10 bg-green-400">
+            {" "}
+            Explore courses
+          </button>
         </Link>
       </div>
     </div>

@@ -8,39 +8,35 @@ import { Link } from "react-router-dom";
 const CourseCategory = () => {
   const categories = [
     {
-      id: 1,
+      id:  1,
       title: "Design",
       img: Design,
-      link: "#",
     },
     {
-      id: 2,
+      id:  2,
       title: "Technology",
       img: Technology,
-      link: "#",
     },
     {
-      id: 3,
+      id:  3,
       title: "Business",
       img: Business,
-      link: "#",
     },
     {
-      id: 4,
+      id:  4,
       title: "Photography",
       img: Photography,
-      link: "#",
     },
   ];
   return (
-    <div >
-      <h3 className="text-2xl font-medium text-white underline">Browse by category</h3>
+    <div>
+      <h3 className="text-2xl font-medium text-white underline text-center capitalize">Browse by category</h3>
       {/* Card component */}
-      <div className="mx-auto container flex items-center justify-evenly mt-3">
+      <div className="mx-auto container flex flex-wrap items-center justify-evenly mt-3">
         {categories.map((category) => (
-          <Link to={`category/:${category.title}`} key={category.id}>
+          <Link to={`category/${category.title}`} key={category.id}>
             <div className="flex flex-col items-center p-5 text-white hover:text-black hover:bg-green-400 rounded-lg transition duration-300 ease-in-out">
-              <div className="h-72 w-72 overflow-hidden rounded-lg">
+              <div className="h-60 w-60 overflow-hidden rounded-lg">
                 <img
                   src={category.img}
                   alt={category.title}

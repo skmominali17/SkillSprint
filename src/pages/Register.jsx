@@ -64,9 +64,6 @@ const Register = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleOAuth2Authentication = async () => {
-    console.log("google clicked");
-  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-300 flex justify-center">
@@ -156,19 +153,6 @@ const Register = () => {
                     className="tracking-wide font-semibold bg-green-400 text-gray-900 w-full py-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none" disabled={loading}
                   >
                     {loading ? <FaSpinner className="animate-spin"/> : "Register"}
-                  </button>
-                  <p className="text-center mt-2">Or</p>
-                  <button
-                    className="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150 w-full mt-1 items-center justify-center"
-                    onClick={handleOAuth2Authentication}
-                  >
-                    <img
-                      className="w-6 h-6"
-                      src="https://www.svgrepo.com/show/475656/google-color.svg"
-                      loading="lazy"
-                      alt="google logo"
-                    />
-                    <span>Continue with Google</span>
                   </button>
                 </form>
               </div>

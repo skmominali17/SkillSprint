@@ -14,6 +14,9 @@ import CourseRender from "./pages/CourseRender.jsx";
 import Home from "./pages/Home.jsx";
 import { CourseProvider } from "./contexts/CourseContext.jsx";
 import MyCourses from "./pages/MyCourses.jsx";
+import ExploreCourses from "./pages/ExploreCourses.jsx";
+import BrowseByCategory from "./pages/BrowseByCategory.jsx";
+import Search from "./pages/Search.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -34,11 +37,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/category/:category",
-    element: <App />,
-  },
-  {
-    path: "/featured/:id",
-    element: <App />,
+    element: (
+      <App>
+        <BrowseByCategory />
+      </App>
+    ),
   },
   {
     path: "/create/course",
@@ -75,7 +78,23 @@ const router = createBrowserRouter([
         </App>
       </ProtectedRoute>
     ),
-  }
+  },
+  {
+    path: "/explore-courses",
+    element: (
+      <App>
+        <ExploreCourses />
+      </App>
+    ),
+  },
+  {
+    path: "/search/:search",
+    element: (
+      <App>
+        <Search />
+      </App>
+    ),
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

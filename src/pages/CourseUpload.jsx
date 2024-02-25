@@ -7,11 +7,12 @@ import { FaSpinner } from "react-icons/fa";
 import { Query } from "appwrite";
 import AuthContext from "../contexts/AuthContext";
 import CourseContext from "../contexts/CourseContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CourseUpload = () => {
   // All Contexts
   const { addCourse, courses } = useContext(CourseContext);
+  const navigate = useNavigate();
   const { user, login } = useContext(AuthContext);
   const [edit, setEdit] = useState(false);
   const [course, setCourse] = useState(null);
@@ -126,6 +127,7 @@ const CourseUpload = () => {
               );
               addCourse(promise.documents);
               alert("Course uploaded successfully");
+              navigate("/");
             }
           } else {
             setLoading(true);
@@ -150,15 +152,7 @@ const CourseUpload = () => {
               );
               addCourse(promise.documents);
               alert("Course updated successfully");
-              // updateCourse({
-              //   ...course,
-              //   title: data.title,
-              //   description: data.description,
-              //   category: data.category,
-              //   lectureLinks: lectureLinks,
-              //   lectureTitles: lectureTitles,
-              // });
-              // console.log("updated course contexzt", courses);
+              navigate("/");
             }
           }
         }

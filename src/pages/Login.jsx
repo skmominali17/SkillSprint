@@ -56,10 +56,6 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleOAuth2Authentication = async () => {
-    console.log("google clicked");
-  };
-
   return (
     <div className="min-h-screen bg-gray-900 text-gray-300 flex justify-center">
       <div className="max-w-screen-xl m-0 sm:m-10 bg-gray-800 shadow sm:rounded-lg flex justify-center flex-1">
@@ -77,19 +73,6 @@ const Login = () => {
                   onSubmit={handleSubmit(submitHandler)}
                   className="w-full px-8 py-4 rounded-lg font-medium bg-gray-700 border border-gray-600 placeholder-gray-400 text-sm focus:outline-none focus:border-gray-500 focus:bg-gray-600"
                 >
-                  <button
-                    className="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150 w-full mt-1 items-center justify-center"
-                    onClick={handleOAuth2Authentication}
-                  >
-                    <img
-                      className="w-6 h-6"
-                      src="https://www.svgrepo.com/show/475656/google-color.svg"
-                      loading="lazy"
-                      alt="google logo"
-                    />
-                    <span>Sign in with Google</span>
-                  </button>
-                  <p className="text-center mt-1 mb-3">Or</p>
                   <input
                     type="email"
                     placeholder="Email"
