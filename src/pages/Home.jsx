@@ -83,6 +83,12 @@ function Home() {
             Explore courses
           </button>
         </Link>
+        <Link to="/profile">
+          <button className="mx-3 px-32 py-10 bg-green-400">
+            {" "}
+            Profile
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ import MyCourses from "./pages/MyCourses.jsx";
 import ExploreCourses from "./pages/ExploreCourses.jsx";
 import BrowseByCategory from "./pages/BrowseByCategory.jsx";
 import Search from "./pages/Search.jsx";
+import Profile from "./pages/Profile.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -94,6 +95,14 @@ const router = createBrowserRouter([
         <Search />
       </App>
     ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <App>
+        <Profile />
+      </App>
+    )
   },
 ]);
 
