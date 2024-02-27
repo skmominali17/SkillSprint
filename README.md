@@ -5,7 +5,7 @@ Things to do:
 4. Browse by category courses - done
 5. Featured courses - done
 6. Likes in each course
-7. Profile Page
+7. Profile Page - done
 8. Explore All courses - done
 
 

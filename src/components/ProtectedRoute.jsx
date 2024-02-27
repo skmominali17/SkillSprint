@@ -1,16 +1,17 @@
-import { useLocation, Navigate } from "react-router-dom";
-import AuthContext from "../contexts/AuthContext";
-import { useContext } from "react";
+import { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
+import AuthContext from '../contexts/AuthContext';
 
-const ProtectedRoute = ({ children}) => {
-  const { user } = useContext(AuthContext);
-  const location = useLocation();
+const ProtectedRoute = ({ children }) => {
+  const { isLoggedIn } = useContext(AuthContext);
 
-  if (user && user.userType === "teacher") {
-    return children;
+  if (!isLoggedIn) {
+    // Redirect to login page if not logged in
+    return <Navigate to="/login" />;
   }
 
-  return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+  // Render the children if the user is logged in
+  return children;
 };
 
 export default ProtectedRoute;

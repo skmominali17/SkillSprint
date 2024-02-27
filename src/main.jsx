@@ -9,7 +9,7 @@ import Register from "./pages/Register.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { SearchProvider } from "./contexts/SearchContext.jsx";
 import CourseUpload from "./pages/CourseUpload.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import TeacherRoute from "./components/TeacherRoute.jsx";
 import CourseRender from "./pages/CourseRender.jsx";
 import Home from "./pages/Home.jsx";
 import { CourseProvider } from "./contexts/CourseContext.jsx";
@@ -18,6 +18,7 @@ import ExploreCourses from "./pages/ExploreCourses.jsx";
 import BrowseByCategory from "./pages/BrowseByCategory.jsx";
 import Search from "./pages/Search.jsx";
 import Profile from "./pages/Profile.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,70 +40,86 @@ const router = createBrowserRouter([
   {
     path: "/category/:category",
     element: (
-      <App>
-        <BrowseByCategory />
-      </App>
+      <ProtectedRoute>
+        <App>
+          <BrowseByCategory />
+        </App>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/create/course",
     element: (
       <ProtectedRoute>
-        <App>
-          <CourseUpload />
-        </App>
+        <TeacherRoute>
+          <App>
+            <CourseUpload />
+          </App>
+        </TeacherRoute>
       </ProtectedRoute>
     ),
   },
   {
     path: "/my-courses",
     element: (
-      <App>
-        <MyCourses />
-      </App>
+      <ProtectedRoute>
+        <App>
+          <MyCourses />
+        </App>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/watch/course/:id",
     element: (
-      <App>
-        <CourseRender />
-      </App>
+      <ProtectedRoute>
+        <App>
+          <CourseRender />
+        </App>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/edit/course/:id",
     element: (
       <ProtectedRoute>
-        <App>
-          <CourseUpload />
-        </App>
+        <TeacherRoute>
+          <App>
+            <CourseUpload />
+          </App>
+        </TeacherRoute>
       </ProtectedRoute>
     ),
   },
   {
     path: "/explore-courses",
     element: (
-      <App>
-        <ExploreCourses />
-      </App>
+      <ProtectedRoute>
+        <App>
+          <ExploreCourses />
+        </App>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/search/:search",
     element: (
-      <App>
-        <Search />
-      </App>
+      <ProtectedRoute>
+        <App>
+          <Search />
+        </App>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/profile",
     element: (
-      <App>
-        <Profile />
-      </App>
-    )
+      <ProtectedRoute>
+        <App>
+          <Profile />
+        </App>
+      </ProtectedRoute>
+    ),
   },
 ]);
 

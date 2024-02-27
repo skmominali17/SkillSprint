@@ -6,10 +6,8 @@ import { databases, storage } from "../appwrite/Connection";
 import AuthContext from "../contexts/AuthContext";
 import CourseCategory from "../components/CourseCategory";
 import FeaturedCourses from "../components/FeaturedCourses";
-import { Link } from "react-router-dom";
 
 function Home() {
-  const { searched } = useContext(SearchContext);
   const { isLoggedIn } = useContext(AuthContext);
 
   useEffect(() => {
@@ -20,7 +18,7 @@ function Home() {
             import.meta.env.VITE_DATABASE_ID,
             import.meta.env.VITE_USERS_COLLECTION_ID
           );
-          const image = await storage.getFilePreview(
+          const image = storage.getFilePreview(
             import.meta.env.VITE_BUCKET_PROFILE_IMAGES_ID,
             "65c8782e758ff0af154e"
           );
@@ -44,21 +42,10 @@ function Home() {
               alt="hero-image"
               className="h-full w-full object-cover"
             />
-            <div className="absolute top-52 right-28 text-white flex flex-col items-center rounded-lg">
+            <div className="absolute top-64 right-28 text-white flex flex-col items-center rounded-lg">
               <div className="font-semibold mb-4 uppercase text-6xl">
                 <span className="text-green-400">learn</span> what <br />
                 matters
-              </div>
-              <div className="flex items-center justify-center mt-2 w-full bg-green-400 rounded-lg p-2">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-full px-6 py-3 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg"
-                  onInput={(e) => searched(e)}
-                />
-                <button>
-                  <FaSearch className="text-2xl mx-3 text-black" />
-                </button>
               </div>
             </div>
           </div>
@@ -71,24 +58,6 @@ function Home() {
             <FeaturedCourses />
           </div>
         )}
-        <Link to="/create/course">
-          <button className="px-32 py-10 bg-green-400">Create</button>
-        </Link>
-        <Link to="/my-courses">
-          <button className="mx-3 px-32 py-10 bg-green-400">mycourses</button>
-        </Link>
-        <Link to="/explore-courses">
-          <button className="mx-3 px-32 py-10 bg-green-400">
-            {" "}
-            Explore courses
-          </button>
-        </Link>
-        <Link to="/profile">
-          <button className="mx-3 px-32 py-10 bg-green-400">
-            {" "}
-            Profile
-          </button>
-        </Link>
       </div>
     </div>
   );

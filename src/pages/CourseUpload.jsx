@@ -108,7 +108,6 @@ const CourseUpload = () => {
               }
             );
             if (promise) {
-              setLoading(false);
               // we are updating the course array of user by adding the courseID
               const update = await databases.updateDocument(
                 import.meta.env.VITE_DATABASE_ID,
@@ -126,6 +125,7 @@ const CourseUpload = () => {
                 import.meta.env.VITE_COURSES_COLLECTION_ID
               );
               addCourse(promise.documents);
+              setLoading(false);
               alert("Course uploaded successfully");
               navigate("/");
             }
@@ -145,12 +145,12 @@ const CourseUpload = () => {
               }
             );
             if (promise) {
-              setLoading(false);
               const promise = await databases.listDocuments(
                 import.meta.env.VITE_DATABASE_ID,
                 import.meta.env.VITE_COURSES_COLLECTION_ID
               );
               addCourse(promise.documents);
+              setLoading(false);
               alert("Course updated successfully");
               navigate("/");
             }

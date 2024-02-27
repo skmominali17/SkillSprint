@@ -4,7 +4,6 @@ import CourseContext from "../contexts/CourseContext";
 import AuthContext from "../contexts/AuthContext";
 import { storage, databases } from "../appwrite/Connection";
 import { Query } from "appwrite";
-import Profile from "../assests/images/Design.jpg";
 import { useParams } from "react-router-dom";
 
 // this function is extracts the videoID from youtube link
@@ -23,6 +22,7 @@ const CourseRender = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [creator, setCreator] = useState();
   const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
   const [activeLectureIndex, setActiveLectureIndex] = useState(null);
 
   // this courseID will come from the url params
@@ -42,6 +42,7 @@ const CourseRender = () => {
         import.meta.env.VITE_BUCKET_THUMBNAILS_ID,
         thumbnailID
       );
+      setThumbnail(thumbnail);
 
       // Finding the creator of the course
       const creatorDetails = await databases.listDocuments(
@@ -50,11 +51,17 @@ const CourseRender = () => {
         [Query.equal("userID", currCourse.userID)]
       );
       setCreator(creatorDetails.documents[0]);
-      setThumbnail(thumbnail);
+
+      //finding the profile Image of the creator
+      const profileImage = storage.getFilePreview(
+        import.meta.env.VITE_BUCKET_PROFILE_IMAGES_ID,
+        user.profileImageID[0],
+      );
+      setProfileImage(profileImage); 
     };
 
     getDetails();
-  }, [currCourse]);
+  }, [currCourse, user]);
 
   const videoOptions = {
     playerVars: {
@@ -87,21 +94,23 @@ const CourseRender = () => {
         </div>
         {activeLectureIndex === null ? (
           <div className="w-full pt-10 pb-6 text-white">
-            <div className="flex items-center w-full gap-4">
-              <div className="w-10 h-10 rounded-full overflow-hidden">
-                <img
-                  src={Profile}
-                  alt="profileImage"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div>
+            <div className="w-full">
+              <div className="flex items-center gap-5">
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  <img
+                    src={profileImage}
+                    alt="profileImage"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <p className="text-2xl">
                   Course Created By:{" "}
                   <span className="text-green-400 font-medium">
                     {creator?.fullName}
                   </span>
                 </p>
+              </div>
+              <div>
                 <p className="text-3xl mt-4 mb-2">{currCourse.title}</p>
                 <p className="text-md">{currCourse.description}</p>
               </div>
