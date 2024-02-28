@@ -12,7 +12,9 @@ const BrowseByCategory = () => {
   );
   return (
     <div className="container mx-auto mt-4">
-      <h1 className="text-3xl text-white">Category: <span className="text-green-400">{params.category}</span></h1>
+      <h1 className="text-3xl text-white">
+        Category: <span className="text-green-400">{params.category}</span>
+      </h1>
       <RenderAllCourses courses={categoryCourses} />
     </div>
   );

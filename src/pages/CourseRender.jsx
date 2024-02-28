@@ -5,7 +5,8 @@ import AuthContext from "../contexts/AuthContext";
 import { storage, databases } from "../appwrite/Connection";
 import { Query } from "appwrite";
 import { useParams } from "react-router-dom";
-
+import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
+import Profile from "../assests/images/profileImage.jpg";
 // this function is extracts the videoID from youtube link
 function extractVideoId(url) {
   const videoIdRegex =
@@ -16,12 +17,12 @@ function extractVideoId(url) {
 
 const CourseRender = () => {
   const params = useParams();
-  const { courses } = useContext(CourseContext);
+  const { courses, addCourse } = useContext(CourseContext);
   const { user } = useContext(AuthContext);
 
   const [thumbnail, setThumbnail] = useState(null);
   const [creator, setCreator] = useState();
-  const [loading, setLoading] = useState(false);
+  const [liked, setLiked] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [activeLectureIndex, setActiveLectureIndex] = useState(null);
 
@@ -30,9 +31,15 @@ const CourseRender = () => {
 
   // filtering the current course with the help of courseID
   const currCourse = courses.find((course) => course.courseId === courseID);
-
   // acquiring the thumbnailID from currCourse
   const thumbnailID = currCourse.thumbnailID;
+
+  useEffect(() => {
+    // Check if the user has already liked the course
+    const hasLiked = currCourse.likes.includes(user.userID);
+    // Update the liked state based on whether the user has liked the course
+    setLiked(hasLiked);
+   }, [currCourse, user.userID]);
 
   useEffect(() => {
     // finding neccesary details such as thumbnail and creator of the course
@@ -53,15 +60,19 @@ const CourseRender = () => {
       setCreator(creatorDetails.documents[0]);
 
       //finding the profile Image of the creator
-      const profileImage = storage.getFilePreview(
-        import.meta.env.VITE_BUCKET_PROFILE_IMAGES_ID,
-        user.profileImageID[0],
-      );
-      setProfileImage(profileImage); 
+      if (user.profileImageID.length > 0) {
+        const profileImage = storage.getFilePreview(
+          import.meta.env.VITE_BUCKET_PROFILE_IMAGES_ID,
+          user.profileImageID[0]
+        );
+        setProfileImage(profileImage);
+      } else {
+        setProfileImage(Profile);
+      }
     };
 
     getDetails();
-  }, [currCourse, user]);
+  }, [currCourse, user, courses]);
 
   const videoOptions = {
     playerVars: {
@@ -69,6 +80,43 @@ const CourseRender = () => {
     },
     width: "100%",
     height: "610",
+  };
+
+  const likeHandler = async () => {
+    const promise = await databases.updateDocument(
+      import.meta.env.VITE_DATABASE_ID,
+      import.meta.env.VITE_COURSES_COLLECTION_ID,
+      currCourse.$id,
+      {
+        likes: [...currCourse.likes, user.userID],
+      }
+    );
+
+    const update = await databases.listDocuments(
+      import.meta.env.VITE_DATABASE_ID,
+      import.meta.env.VITE_COURSES_COLLECTION_ID
+    );
+    addCourse(update.documents);
+    setLiked(true);
+  };
+
+  const UnlikeHandler = async () => {
+    const newLikes = currCourse.likes.filter((like) => like !== user.userID);
+    const promise = await databases.updateDocument(
+      import.meta.env.VITE_DATABASE_ID,
+      import.meta.env.VITE_COURSES_COLLECTION_ID,
+      currCourse.$id,
+      {
+        likes: newLikes,
+      }
+    );
+
+    const update = await databases.listDocuments(
+      import.meta.env.VITE_DATABASE_ID,
+      import.meta.env.VITE_COURSES_COLLECTION_ID
+    );
+    addCourse(update.documents);
+    setLiked(false);
   };
 
   return (
@@ -96,7 +144,7 @@ const CourseRender = () => {
           <div className="w-full pt-10 pb-6 text-white">
             <div className="w-full">
               <div className="flex items-center gap-5">
-                <div className="w-10 h-10 rounded-full overflow-hidden">
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-500">
                   <img
                     src={profileImage}
                     alt="profileImage"
@@ -110,9 +158,32 @@ const CourseRender = () => {
                   </span>
                 </p>
               </div>
-              <div>
-                <p className="text-3xl mt-4 mb-2">{currCourse.title}</p>
-                <p className="text-md">{currCourse.description}</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl mt-4 mb-2">{currCourse.title}</p>
+                  <p className="text-md">{currCourse.description}</p>
+                </div>
+                
+                <div className="flex gap-2 items-center">
+                <div className="text-black bg-gray-300 py-2 px-4 rounded-full">{currCourse?.likes.length}</div>
+                  {!liked ? (
+                    <button
+                      className="flex items-center gap-2 bg-green-400 text-black px-2 py-1 rounded-lg"
+                      onClick={likeHandler}
+                    >
+                      <AiOutlineLike />
+                      Like
+                    </button>
+                  ) : (
+                    <button
+                      className="flex items-center gap-2 bg-green-400 text-black px-2 py-1 rounded-lg"
+                      onClick={UnlikeHandler}
+                    >
+                      <AiOutlineDislike />
+                      Unlike
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
