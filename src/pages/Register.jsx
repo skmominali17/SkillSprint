@@ -165,7 +165,7 @@ const Register = () => {
             </div>
           </div>
         </div>
-        <div className="items-center flex-1 bg-green-100 text-center lg:flex rounded-md">
+        <div className="sm:items-center sm:flex-1 bg-green-100 sm:text-center lg:flex sm:rounded-md hidden">
           <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat">
             <img
               src="https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg?w=1380&t=st=1707296811~exp=1707297411~hmac=4b4d8e435e0757cc58dafad8c7d25c46558759e063fee4180f2a1e0fc302ddbb"

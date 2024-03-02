@@ -130,7 +130,7 @@ const Login = () => {
             </div>
           </div>
         </div>
-        <div className="items-center flex-1 bg-green-100 text-center lg:flex rounded-md">
+        <div className="sm:items-center sm:flex-1 bg-green-100 sm:text-center lg:flex sm:rounded-md hidden">
           <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat">
             <img
               src="https://img.freepik.com/free-vector/online-certification-illustration_23-2148575636.jpg?w=740&t=st=1707296852~exp=1707297452~hmac=9db8a5c3a7dee0fbb5f27efc3845f7b29c59ad45fe8bfecd3b15ebcc1705e68c"

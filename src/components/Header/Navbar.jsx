@@ -57,26 +57,26 @@ function Navbar() {
             </div>
           </div>
         </div>
-        <div className="sm:flex sm:items-center sm:gap-10 sm:m-0 m-5 grid grid-cols-1 gap-2">
+        <div className="sm:flex sm:items-center sm:gap-10 sm:m-0 m-5 grid grid-cols-4 gap-4">
           {isLoggedIn && user.userType === "teacher" && (
             <Link to={"/create/course"}>
-              <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full">
+              <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full justify-center flex">
                 <IoMdAdd className="text-2xl" />
               </div>
             </Link>
           )}
           <Link to={"/explore-courses"}>
-            <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full">
+            <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full justify-center flex">
               <CiCompass1 className="text-2xl" />
             </div>
           </Link>
           <Link to={"/my-courses"}>
-            <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full">
+            <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full justify-center flex">
               <CiBookmark className="text-2xl" />
             </div>
           </Link>
           <Link to={"/profile"}>
-            <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full">
+            <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full justify-center flex">
               <CiUser className="text-2xl" />
             </div>
           </Link>
