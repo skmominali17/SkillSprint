@@ -6,7 +6,7 @@ import RenderAllCourses from '../components/RenderAllCourses';
 const Search = () => {
     const {courses} = useContext(CourseContext);
     const params = useParams();
-    const searchedCourses = courses.filter((course) => course.title.includes(params.search.replace(":", "")));
+    const searchedCourses = courses.filter((course) => course.title.toLowerCase().includes(params.search.replace(":", "").toLowerCase()));
   return (
     <div><RenderAllCourses courses={searchedCourses} /></div>
   )

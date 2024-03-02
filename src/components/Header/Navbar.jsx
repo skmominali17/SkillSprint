@@ -24,9 +24,9 @@ function Navbar() {
 
   return (
     <header className="bg-neutral-700 py-4">
-      <nav className="container mx-auto flex justify-between items-center">
-        <div className="flex items-center justify-between w-[60%]">
-          <div>
+      <nav className="container mx-auto sm:flex sm:justify-between sm:items-center">
+        <div className="sm:flex sm:items-center sm:justify-between sm:w-[60%]">
+          <div className="sm:ml-0 ml-5">
             <NavLink
               to="/"
               className="text-2xl tracking-wide font-semibold text-white"
@@ -37,13 +37,13 @@ function Navbar() {
               </span>
             </NavLink>
           </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-green-400 flex items-center rounded-lg p-2 justify-center">
+          <div className="sm:flex sm:justify-center sm:items-center ">
+            <div className="bg-green-400 sm:flex flex sm:items-center items-center rounded-lg p-2 sm:justify-center m-5 sm:m-0">
               <input
                 type="text"
                 placeholder="Search..."
                 className="w-[90%] px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none text-lg"
-                onInput={(e) => setSearched(e.target.value)}
+                onInput={(e) => setSearched(e.target.value.toLowerCase())}
                 value={searched}
               />
               <button
@@ -57,7 +57,7 @@ function Navbar() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-10">
+        <div className="sm:flex sm:items-center sm:gap-10 sm:m-0 m-5 grid grid-cols-1 gap-2">
           {isLoggedIn && user.userType === "teacher" && (
             <Link to={"/create/course"}>
               <div className="p-2 bg-gray-300 hover:bg-green-500 rounded-full">
