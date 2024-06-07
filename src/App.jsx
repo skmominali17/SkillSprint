@@ -11,7 +11,7 @@ const App = ({ children }) => {
       <div className="flex-grow">
         {children}
       </div>
-      <Footer />
+{/*       <Footer /> */}
     </div>
   );
 };
