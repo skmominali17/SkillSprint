@@ -1,25 +1,39 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { account } from "../appwrite/Connection";
+
 
 const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState(null);
-  
-    const login = (userData) => {
-      setIsLoggedIn(true);
-      setUser(userData);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getSession = async () => {
+      const result = await account.get();
+      console.log("result", result)
+      if (result)
+        login(result);
+      else 
+        logout();
     };
-  
-    const logout = () => {
-      setIsLoggedIn(false);
-      setUser(null);
-    };
-  
-    return (
-      <AuthContext.Provider value={{ isLoggedIn, login, logout, user }}>
-        {children}
-      </AuthContext.Provider>
-    );
+    getSession();
+  }, []);
+
+  const login = (userData) => {
+    setIsLoggedIn(true);
+    setUser(userData);
   };
-  
-  export default AuthContext;
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, user }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthContext;

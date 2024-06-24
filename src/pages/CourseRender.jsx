@@ -78,8 +78,8 @@ const CourseRender = () => {
     playerVars: {
       autoplay: 0,
     },
-    width: "100%",
-    height: "610",
+    height: "100%",
+    width: "100%"
   };
 
   const likeHandler = async () => {
@@ -120,9 +120,9 @@ const CourseRender = () => {
   };
 
   return (
-    <div className="w-screen bg-gray-900 py-3">
+    <div className="w-screen bg-gray-900 py-3 px-3">
       <div className="container mx-auto flex flex-col items-center">
-        <div className="mx-auto w-full h-2/3 overflow-hidden rounded-lg">
+        <div className="w-full overflow-hidden rounded-lg">
           {activeLectureIndex !== null ? (
             // Render YouTube video for the active lecture
             <YouTube
@@ -130,6 +130,7 @@ const CourseRender = () => {
                 currCourse.lectureLinks[activeLectureIndex]
               )}
               opts={videoOptions}
+              className="h-[30vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh]"
             />
           ) : (
             // Render thumbnail if no lecture is active
@@ -151,8 +152,8 @@ const CourseRender = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <p className="text-2xl">
-                  Course Created By:{" "}
+                <p className="text-lg sm:text-2xl">
+                  Course Created By -{" "}
                   <span className="text-green-400 font-medium">
                     {creator?.fullName}
                   </span>
@@ -160,8 +161,8 @@ const CourseRender = () => {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl mt-4 mb-2">{currCourse.title}</p>
-                  <p className="text-md">{currCourse.description}</p>
+                  <p className="text-lg sm:text-3xl mt-4 mb-2">{currCourse.title}</p>
+                  {/* <p className="text-md">{currCourse.description}</p> */}
                 </div>
                 
                 <div className="flex gap-2 items-center">
@@ -189,8 +190,8 @@ const CourseRender = () => {
           </div>
         ) : (
           <div className="w-full pt-10 pb-6 text-white">
-            <p className="text-3xl mb-2">Lecture {activeLectureIndex + 1}</p>
-            <p className="text-md">
+            <p className="text-lg mb-2">Lecture {activeLectureIndex + 1}</p>
+            <p className="text-lg">
               {currCourse.lectureTitles[activeLectureIndex]}
             </p>
           </div>
