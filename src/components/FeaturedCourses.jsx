@@ -7,10 +7,10 @@ const FeaturedCourses = () => {
   const featuredCourses = courses.filter((course) => course.likes.length > 0);
 
   return (
-    <div>
+    <div className="mt-16">
       {featuredCourses.length > 0 && (
         <div>
-          <h3 className="text-2xl font-medium text-white underline text-center">
+          <h3 className="text-3xl sm:text-4xl font-medium text-white underline text-center">
             Featured Courses
           </h3>
           <RenderAllCourses courses={featuredCourses} />

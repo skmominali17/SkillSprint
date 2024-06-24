@@ -164,8 +164,8 @@ const CourseUpload = () => {
   };
 
   return (
-    <div className="w-screen h-screen bg-gray-900">
-      <div className="container mx-auto py-8 flex items-center justify-center">
+    <div className="bg-gray-900">
+      <div className="container mx-auto py-8 px-2 flex items-center justify-center">
         <div className="bg-gray-800 rounded-lg p-6 w-full">
           <h2 className="text-3xl font-medium text-white mb-4">
             {edit ? "Edit Course" : "Add A New Course"}

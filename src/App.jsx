@@ -5,13 +5,13 @@ import ScrollToTop from './components/ScrollToTop';
 
 const App = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900">
+    <div className="flex flex-col bg-gray-900">
       <ScrollToTop />
       <Navbar />
       <div className="flex-grow">
         {children}
       </div>
-{/*       <Footer /> */}
+      <Footer />
     </div>
   );
 };
