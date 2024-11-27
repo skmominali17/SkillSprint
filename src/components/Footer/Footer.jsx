@@ -56,7 +56,7 @@ const Footer = () => {
             </p>
             <p className="mb-4 flex items-center justify-center md:justify-start">
               <FaMailBulk className="mr-4 text-xl"/>
-              info@example.com
+              skmominali17@gmail.com
             </p>
           </div>
         </div>
